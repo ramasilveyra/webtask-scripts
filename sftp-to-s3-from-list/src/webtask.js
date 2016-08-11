@@ -6,7 +6,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { isArray, isString } from 'lodash';
 import stream from 'stream';
-// import replacestream from 'replacestream';
+import replacestream from 'replacestream';
 
 const app = express();
 
@@ -255,11 +255,12 @@ function uploadFile({ s3Client, path, filePath, readStream }) {
       //   .pipe(uploadFromStream(s3Client, mime.lookup(filePath), filePath.replace(path, '')));
 
       readStream
-        // Hacky workaround
-        //
-        // .pipe(replacestream('a', 'b'))
-        // .pipe(replacestream('c', 'a'))
-        // .pipe(replacestream('foo', 'bar'))
+        .pipe(replacestream('http://auth0.wpengine.com', 'https://auth0.com/learn'))
+        .pipe(replacestream('auth0.wpengine.com', 'auth0.com/learn'))
+        .pipe(replacestream(
+          'document.addEventListener("DOMContentLoaded", function() {',
+          'document.addEventListener("hackNeverExecuteThis", function() {'
+        ))
         .pipe(uploadFromStream(s3Client, mime.lookup(filePath), filePath.replace(path, '')));
     } else {
       readStream
